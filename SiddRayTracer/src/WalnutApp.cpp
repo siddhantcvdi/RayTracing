@@ -35,18 +35,21 @@ public:
 	void Render() {
 
 		Timer timer;
-
+		// If there is no image or viewport height and width have changed then only create a new Image and new Image Buffer acc to the new viewport, also delete the old image buffer
 		if (!m_Image || m_ViewportWidth != m_Image->GetWidth() || m_ViewportHeight != m_Image->GetHeight()) {
 			m_Image = std::make_shared<Walnut::Image>(m_ViewportWidth, m_ViewportHeight, ImageFormat::RGBA);
 			delete[] m_ImageData;
 			m_ImageData = new uint32_t[m_ViewportHeight * m_ViewportWidth];
 		}
 
+		// Set Random pixel value ABGR - (8 bits each for RGBA - uint32)
 		for (uint32_t i = 0; i < m_ViewportHeight * m_ViewportWidth; i++) {
 			m_ImageData[i] = Random::UInt();
+			// To make the A value 100%
 			m_ImageData[i] |= 0xff000000;
 		}
 
+		// Link image data to m_Image
 		m_Image->SetData(m_ImageData);
 
 		m_LastRenderTime = timer.ElapsedMillis();
